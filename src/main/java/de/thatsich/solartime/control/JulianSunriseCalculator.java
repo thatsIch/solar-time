@@ -3,7 +3,7 @@ package de.thatsich.solartime.control;
 import de.thatsich.solartime.entity.Altitude;
 import de.thatsich.solartime.entity.SolarEquationVariables;
 
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public class JulianSunriseCalculator {
@@ -16,7 +16,7 @@ public class JulianSunriseCalculator {
         this.solarEquationVariableCalculator = solarEquationVariableCalculator;
     }
 
-    Optional<Double> calculateJulianSunrise(final Calendar day, final double latitude, double longitude, Altitude altitude) {
+    Optional<Double> calculateJulianSunrise(final ZonedDateTime day, final double latitude, double longitude, Altitude altitude) {
         final Optional<Double> maybeSunset = this.julianSunsetCalculator.calculateJulianSunset(day, latitude, longitude, altitude);
         return maybeSunset.map(sunset -> {
             final SolarEquationVariables solarEquationVariables = this.solarEquationVariableCalculator.calculateSolarEquationVariables(day, longitude);

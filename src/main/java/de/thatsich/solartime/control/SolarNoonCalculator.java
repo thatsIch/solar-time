@@ -2,7 +2,7 @@ package de.thatsich.solartime.control;
 
 import de.thatsich.solartime.entity.Altitude;
 
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public class SolarNoonCalculator {
@@ -27,7 +27,7 @@ public class SolarNoonCalculator {
      * @return            a Calendar with the time set to solar noon for the given day.
      * @see <a href="http://en.wikipedia.org/wiki/Sunrise_equation">Sunrise equation on Wikipedia</a>
      */
-    public Optional<Calendar> calculateSolarNoon(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateSolarNoon(final ZonedDateTime day, final double latitude, double longitude) {
         final var solarEquationVariables = this.solarCalculator.calculateSolarEquationVariables(day, longitude);
 
         // Add a check for Antarctica in June and December (sun always down or up, respectively).
@@ -40,10 +40,11 @@ public class SolarNoonCalculator {
         return this.hourAngleCalculator.calculateHourAngle(Altitude.SUNRISE_SUNSET, latitudeRad, solarEquationVariables.getDelta())
                 .map(omega -> {
                     // Convert jtransit Gregorian dates, in UTC
-                    final var gregNoonUTC = this.dateConverter.toGregorianDate(solarEquationVariables.getJtransit());
-                    final var gregNoon = Calendar.getInstance(day.getTimeZone());
-                    gregNoon.setTimeInMillis(gregNoonUTC.getTimeInMillis());
-                    return gregNoon;
+                    final var localTimeNoon = this.dateConverter.toGregorianDate(solarEquationVariables.getJtransit());
+                    final var zone = day.getZone();
+                    final var noonWithMovedTimeZone = localTimeNoon.withZoneSameInstant(zone);
+
+                    return noonWithMovedTimeZone;
                 });
     }
 

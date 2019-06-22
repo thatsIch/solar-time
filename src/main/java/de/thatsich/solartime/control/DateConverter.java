@@ -1,9 +1,8 @@
 package de.thatsich.solartime.control;
 
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 public class DateConverter {
 
@@ -17,30 +16,31 @@ public class DateConverter {
      * @return the Julian date for the given Gregorian date.
      * @see <a href="http://en.wikipedia.org/wiki/Julian_day#Converting_Julian_or_Gregorian_calendar_date_to_Julian_Day_Number">Converting to Julian day number on Wikipedia</a>
      */
-    double toJulianDate(final Calendar gregorianDate) {
+    double toJulianDate(final ZonedDateTime gregorianDate) {
         // Convert the date to the UTC time zone.
-        TimeZone tzUTC = TimeZone.getTimeZone("UTC");
-        Calendar gregorianDateUTC = Calendar.getInstance(tzUTC);
-        gregorianDateUTC.setTimeInMillis(gregorianDate.getTimeInMillis());
+        final var utc = ZoneOffset.UTC;
+        final var gregorianDateUTC = gregorianDate.withZoneSameInstant(utc);
+
         // For the year (Y) astronomical year numbering is used, thus 1 BC is 0,
         // 2 BC is -1, and 4713 BC is -4712.
-        int year = gregorianDateUTC.get(Calendar.YEAR);
+        int year = gregorianDateUTC.getYear();
         // The months (M) January to December are 1 to 12
-        int month = gregorianDateUTC.get(Calendar.MONTH) + 1;
+        int month = gregorianDateUTC.getMonthValue();
         // D is the day of the month.
-        int day = gregorianDateUTC.get(Calendar.DAY_OF_MONTH);
+        int day = gregorianDateUTC.getDayOfMonth();
         int a = (14 - month) / 12;
         int y = year + 4800 - a;
         int m = month + 12 * a - 3;
 
         int julianDay = day + (153 * m + 2) / 5 + 365 * y + (y / 4) - (y / 100)
                 + (y / 400) - 32045;
-        int hour = gregorianDateUTC.get(Calendar.HOUR_OF_DAY);
-        int minute = gregorianDateUTC.get(Calendar.MINUTE);
-        int second = gregorianDateUTC.get(Calendar.SECOND);
+        double hour = gregorianDateUTC.getHour();
+        double minute = gregorianDateUTC.getMinute();
+        double second = gregorianDateUTC.getSecond();
 
-        return julianDay + ((double) hour - 12) / 24
-                + ((double) minute) / 1440 + ((double) second) / 86400;
+        return julianDay + (hour - 12) / 24
+                + minute / 1440
+                + second / 86400;
     }
 
     /**
@@ -53,8 +53,7 @@ public class DateConverter {
      * @return a Gregorian date in the local time zone.
      * @see <a href="http://en.wikipedia.org/wiki/Julian_day#Gregorian_calendar_from_Julian_day_number">Converting from Julian day to Gregorian date, on Wikipedia</a>
      */
-    Calendar toGregorianDate(final double julianDate) {
-
+    ZonedDateTime toGregorianDate(final double julianDate) {
         final int DAYS_PER_4000_YEARS = 146097;
         final int DAYS_PER_CENTURY = 36524;
         final int DAYS_PER_4_YEARS = 1461;
@@ -120,23 +119,14 @@ public class DateConverter {
         // Ex: 17.208*60 - (17*60 + 12) = 1032.48 - 1032 = 0.48 minutes. 0.48*60
         // = 28.8 seconds.
         // We round to 29 seconds.
-        final int seconds = (int) ((dayFraction * 24 * 3600 - (hours * 3600 + minutes * 60)) + .5);
+        final var seconds = (int) ((dayFraction * 24 * 3600 - (hours * 3600 + minutes * 60)) + .5);
 
         // Create the gregorian date in UTC.
-        final var gregorianDateUTC = ZonedDateTime.of(year, month, day, hours, minutes, seconds, 0, ZoneOffset.UTC);
-        final Calendar gregorianDateUTC = Calendar.getInstance(TimeZone
-                .getTimeZone("UTC"));
-        gregorianDateUTC.set(Calendar.YEAR, year);
-        gregorianDateUTC.set(Calendar.MONTH, month);
-        gregorianDateUTC.set(Calendar.DAY_OF_MONTH, day);
-        gregorianDateUTC.set(Calendar.HOUR_OF_DAY, hours);
-        gregorianDateUTC.set(Calendar.MINUTE, minutes);
-        gregorianDateUTC.set(Calendar.SECOND, seconds);
-        gregorianDateUTC.set(Calendar.MILLISECOND, 0);
+        final var gregorianDateUTC = ZonedDateTime.of(year, month + 1, day, hours, minutes, 0, 0, ZoneOffset.UTC)
+                .plusSeconds(seconds);
+        final var utc = ZoneId.systemDefault();
+        final var localZoned = gregorianDateUTC.withZoneSameInstant(utc);
 
-        // Convert to a Gregorian date in the local time zone.
-        Calendar gregorianDate = Calendar.getInstance();
-        gregorianDate.setTimeInMillis(gregorianDateUTC.getTimeInMillis());
-        return gregorianDate;
+        return localZoned;
     }
 }

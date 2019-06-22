@@ -2,6 +2,7 @@ package de.thatsich.solartime.control;
 
 import de.thatsich.solartime.entity.Altitude;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -25,15 +26,16 @@ public class DuskCalculator {
      * sunrise, the second element is the sunset. This will return null if there is no sunrise or sunset. (Ex: no sunrise in Antarctica in June)
      * @see <a href="http://en.wikipedia.org/wiki/Sunrise_equation">Sunrise equation on Wikipedia</a>
      */
-    public Optional<Calendar> calculateDuskEvent(final Calendar day, final double latitude, double longitude, Altitude altitude) {
+    public Optional<ZonedDateTime> calculateDuskEvent(final ZonedDateTime day, final double latitude, double longitude, Altitude altitude) {
         return this.julianSunsetCalculator.calculateJulianSunset(day, latitude, longitude, altitude)
                 .map(jset -> {
                     // Convert sunset and sunrise to Gregorian dates, in UTC
-                    final Calendar gregSetUTC = this.dateConverter.toGregorianDate(jset);
+                    final var localTimeSunset = this.dateConverter.toGregorianDate(jset);
 
-                    final Calendar gregSet = Calendar.getInstance(day.getTimeZone());
-                    gregSet.setTimeInMillis(gregSetUTC.getTimeInMillis());
-                    return gregSet;
+                    final var zone = day.getZone();
+                    final var sunsetWithMovedTimeZone = localTimeSunset.withZoneSameInstant(zone);
+
+                    return sunsetWithMovedTimeZone;
                 });
     }
 

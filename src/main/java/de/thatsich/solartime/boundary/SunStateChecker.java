@@ -2,7 +2,7 @@ package de.thatsich.solartime.boundary;
 
 import de.thatsich.solartime.entity.DayPeriod;
 
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class SunStateChecker {
@@ -21,7 +21,7 @@ public class SunStateChecker {
      * before the sunset for that location.
      */
     public boolean isDay(double latitude, double longitude) {
-        Calendar now = Calendar.getInstance();
+        final var now = ZonedDateTime.now();
         return isDay(now, latitude, longitude);
     }
 
@@ -33,26 +33,26 @@ public class SunStateChecker {
      * true if the given datetime at the location is after the sunrise and
      * before the sunset for that location.
      */
-    public boolean isDay(Calendar calendar, double latitude, double longitude) {
+    public boolean isDay(ZonedDateTime calendar, double latitude, double longitude) {
         final var maybeSunrise = this.solarTime.calculateSunrise(calendar, latitude, longitude);
         final var maybeSunset = this.solarTime.calculateSunset(calendar, latitude, longitude);
 
         // In extreme latitudes, there may be no sunrise/sunset time in summer or
         // winter, because it will be day or night 24 hours
         if (maybeSunrise.isEmpty() ||maybeSunset.isEmpty()) {
-            int month = calendar.get(Calendar.MONTH); // Reminder: January = 0
+            int month = calendar.getMonthValue();
             if (latitude > 0) {
                 // Always night at the north pole in December
-                return 3 <= month && month <= 10; // Always day at the north pole in June
+                return 4 <= month && month <= 11; // Always day at the north pole in June
             } else {
                 // Always day at the south pole in December
-                return month < 3 || 10 < month; // Always night at the south pole in June
+                return month < 4 || 11 < month; // Always night at the south pole in June
             }
         }
         final var sunrise = maybeSunrise.get();
         final var sunset = maybeSunset.get();
 
-        return calendar.after(sunrise) && calendar.before(sunset);
+        return calendar.isAfter(sunrise) && calendar.isBefore(sunset);
     }
 
     /**
@@ -63,7 +63,7 @@ public class SunStateChecker {
      * before the astronomical twilight dawn for that location.
      */
     public boolean isNight(double latitude, double longitude) {
-        Calendar now = Calendar.getInstance();
+        final var now = ZonedDateTime.now();
         return isNight(now, latitude, longitude);
     }
 
@@ -75,24 +75,24 @@ public class SunStateChecker {
      * true if the given datetime at the location is after the astronomical twilight dusk and before
      * the astronomical twilight dawn.
      */
-    public boolean isNight(Calendar calendar, double latitude, double longitude) {
+    public boolean isNight(ZonedDateTime calendar, double latitude, double longitude) {
         final var maybeDawn = this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude);
         final var maybeDusk = this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude);
         if (maybeDawn.isEmpty() ||maybeDusk.isEmpty()) {
-            int month = calendar.get(Calendar.MONTH); // Reminder: January = 0
+            int month = calendar.getMonthValue();
             if (latitude > 0) {
                 // Always night at the north pole in December
-                return month < 3 || month > 10; // Always day at the north pole in June
+                return month < 4 || month > 11; // Always day at the north pole in June
             } else {
                 // Always day at the south pole in December
-                return month >= 3 && month <= 10; // Always night at the south pole in June
+                return month >= 4 && month <= 11; // Always night at the south pole in June
             }
         }
 
         final var dawn = maybeDawn.get();
         final var dusk = maybeDusk.get();
 
-        return calendar.before(dawn) || calendar.after(dusk);
+        return calendar.isBefore(dawn) || calendar.isAfter(dusk);
     }
 
     /**
@@ -103,13 +103,13 @@ public class SunStateChecker {
      * or between civil twilight dawn and sunrise.
      */
     public boolean isCivilTwilight(double latitude, double longitude) {
-        Calendar today = Calendar.getInstance();
+        final var today = ZonedDateTime.now();
         return isCivilTwilight(today, latitude, longitude);
     }
 
-    private boolean inBetween(Calendar now, Calendar earlier, Calendar early, Calendar late, Calendar later) {
-        final var inEarly = now.after(earlier) && now.before(early);
-        final var inLater = now.after(late) && now.before(later);
+    private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
+        final var inEarly = now.isAfter(earlier) && now.isBefore(early);
+        final var inLater = now.isAfter(late) && now.isBefore(later);
 
         return inEarly || inLater;
     }
@@ -122,7 +122,7 @@ public class SunStateChecker {
      * This returns true if the given time at the location is between sunset and civil twilight dusk
      * or between civil twilight dawn and sunrise.
      */
-    public boolean isCivilTwilight(Calendar calendar, double latitude, double longitude) {
+    public boolean isCivilTwilight(ZonedDateTime calendar, double latitude, double longitude) {
         final var maybeSunset = this.solarTime.calculateSunset(calendar, latitude, longitude);
         final var maybeSunrise = this.solarTime.calculateSunrise(calendar, latitude, longitude);
         final var maybeCivilDusk = this.solarTime.calculateCivilDusk(calendar, latitude, longitude);
@@ -144,7 +144,7 @@ public class SunStateChecker {
      * or between nautical and civil twilight dawn.
      */
     public boolean isNauticalTwilight(double latitude, double longitude) {
-        Calendar today = Calendar.getInstance();
+        final var today = ZonedDateTime.now();
         return isNauticalTwilight(today, latitude, longitude);
     }
 
@@ -156,7 +156,7 @@ public class SunStateChecker {
      * This returns true if the given time at the location is between civil and nautical twilight dusk
      * or between nautical and civil twilight dawn.
      */
-    public boolean isNauticalTwilight(Calendar calendar, double latitude, double longitude) {
+    public boolean isNauticalTwilight(ZonedDateTime calendar, double latitude, double longitude) {
         final var maybeCivilDusk = this.solarTime.calculateCivilDusk(calendar, latitude, longitude);
         final var maybeCivilDawn = this.solarTime.calculateCivilDawn(calendar, latitude, longitude);
         final var maybeNauticalDawn = this.solarTime.calculateNauticalDawn(calendar, latitude, longitude);
@@ -178,7 +178,7 @@ public class SunStateChecker {
      * or between astronomical and nautical twilight dawn.
      */
     public boolean isAstronomicalTwilight(double latitude, double longitude) {
-        Calendar today = Calendar.getInstance();
+        final var today = ZonedDateTime.now();
         return isAstronomicalTwilight(today, latitude, longitude);
     }
 
@@ -190,7 +190,7 @@ public class SunStateChecker {
      * This returns true if the given time at the location is between nautical and astronomical twilight dusk
      * or between astronomical and nautical twilight dawn.
      */
-    public boolean isAstronomicalTwilight(Calendar calendar, double latitude, double longitude) {
+    public boolean isAstronomicalTwilight(ZonedDateTime calendar, double latitude, double longitude) {
         final var maybeNauticalDawn = this.solarTime.calculateNauticalDawn(calendar, latitude, longitude);
         final var maybeNauticalDusk = this.solarTime.calculateNauticalDusk(calendar, latitude, longitude);
         final var maybeAstronomicalDusk = this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude);
@@ -210,7 +210,7 @@ public class SunStateChecker {
      * @return true if it is civil, nautical, or astronomical twilight currently at the given location.
      */
     public boolean isTwilight(double latitude, double longitude) {
-        Calendar today = Calendar.getInstance();
+        final var today = ZonedDateTime.now();
         return isTwilight(today, latitude, longitude);
     }
 
@@ -220,13 +220,13 @@ public class SunStateChecker {
      * @param calendar the given datetime to check for twilight
      * @return true if at the given location and calendar, it is civil, nautical, or astronomical twilight.
      */
-    public boolean isTwilight(Calendar calendar, double latitude, double longitude) {
+    public boolean isTwilight(ZonedDateTime calendar, double latitude, double longitude) {
         return isCivilTwilight(calendar, latitude, longitude)
                 || isNauticalTwilight(calendar, latitude, longitude)
                 || isAstronomicalTwilight(calendar, latitude, longitude);
     }
 
-    public DayPeriod getDayPeriod(Calendar calendar, double latitude, double longitude) {
+    public DayPeriod getDayPeriod(ZonedDateTime calendar, double latitude, double longitude) {
         if (isDay(calendar, latitude, longitude)) return DayPeriod.DAY;
         if (isCivilTwilight(calendar, latitude, longitude)) return DayPeriod.CIVIL_TWILIGHT;
         if (isNauticalTwilight(calendar, latitude, longitude)) return DayPeriod.NAUTICAL_TWILIGHT;

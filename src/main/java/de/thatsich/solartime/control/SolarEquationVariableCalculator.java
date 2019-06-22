@@ -2,7 +2,7 @@ package de.thatsich.solartime.control;
 
 import de.thatsich.solartime.entity.SolarEquationVariables;
 
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 
 import static de.thatsich.solartime.entity.JulianConstants.CONST_0009;
 import static de.thatsich.solartime.entity.JulianConstants.CONST_360;
@@ -26,7 +26,7 @@ public class SolarEquationVariableCalculator {
      * @return a 2-element array with the ecliptic longitude (lambda) as the first element, and solar transit (jtransit) as the second element
      * @see <a href="http://en.wikipedia.org/wiki/Sunrise_equation">Sunrise equation on Wikipedia</a>
      */
-    public SolarEquationVariables calculateSolarEquationVariables(final Calendar day, double longitude) {
+    public SolarEquationVariables calculateSolarEquationVariables(final ZonedDateTime day, double longitude) {
 
         longitude = -longitude;
 

@@ -3,7 +3,7 @@ package de.thatsich.solartime.control;
 import de.thatsich.solartime.entity.Altitude;
 import de.thatsich.solartime.entity.SolarEquationVariables;
 
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static de.thatsich.solartime.entity.JulianConstants.CONST_0009;
@@ -20,7 +20,7 @@ public class JulianSunsetCalculator {
         this.hourAngleCalculator = hourAngleCalculator;
     }
 
-    Optional<Double> calculateJulianSunset(final Calendar day, final double latitude, double longitude, Altitude altitude) {
+    Optional<Double> calculateJulianSunset(final ZonedDateTime day, final double latitude, double longitude, Altitude altitude) {
         final SolarEquationVariables solarEquationVariables = this.solarCalculator.calculateSolarEquationVariables(day, longitude);
 
         final var inverted = -longitude;

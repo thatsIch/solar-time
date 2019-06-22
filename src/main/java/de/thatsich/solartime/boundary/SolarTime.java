@@ -5,8 +5,8 @@ import de.thatsich.solartime.control.DuskCalculator;
 import de.thatsich.solartime.control.SolarNoonCalculator;
 import de.thatsich.solartime.entity.Altitude;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 
@@ -45,11 +45,11 @@ public class SolarTime {
      * civil twilight dawn, the second element is the civil twilight dusk.
      * This will return null if there is no civil twilight. (Ex: no twilight in Antarctica in December)
      */
-    public Optional<Calendar> calculateCivilDawn(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateCivilDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.CIVIL);
     }
 
-    public Optional<Calendar> calculateCivilDusk(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateCivilDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.CIVIL);
     }
 
@@ -63,11 +63,11 @@ public class SolarTime {
      * nautical twilight dawn, the second element is the nautical twilight dusk.
      * This will return null if there is no nautical twilight. (Ex: no twilight in Antarctica in December)
      */
-    public Optional<Calendar> calculateNauticalDawn(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateNauticalDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.NAUTICAL);
     }
 
-    public Optional<Calendar> calculateNauticalDusk(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateNauticalDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.NAUTICAL);
     }
 
@@ -81,31 +81,28 @@ public class SolarTime {
      * astronomical twilight dawn, the second element is the  astronomical twilight dusk.
      * This will return null if there is no astronomical twilight. (Ex: no twilight in Antarctica in December)
      */
-    public Optional<Calendar> calculateAstronomicalDawn(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateAstronomicalDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
     }
 
-    public Optional<Calendar> calculateAstronomicalDusk(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateAstronomicalDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
     }
 
-    public Optional<Calendar> calculateSunrise(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateSunrise(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude,longitude, Altitude.SUNRISE_SUNSET);
     }
 
-    public Optional<Calendar> calculateSunset(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateSunset(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.SUNRISE_SUNSET);
     }
 
-    public Optional<Calendar> calculateSolarNoon(final Calendar day, final double latitude, double longitude) {
+    public Optional<ZonedDateTime> calculateSolarNoon(final ZonedDateTime day, final double latitude, double longitude) {
         return this.solarNoonCalculator.calculateSolarNoon(day, latitude, longitude);
     }
 
-    public Optional<Calendar> calculatePreviousSolarMidnight(final Calendar day, final double latitude, double longitude) {
-        final var dayDate = day.getTime();
-        final var previousDay = Calendar.getInstance();
-        previousDay.setTime(dayDate);
-        previousDay.add(Calendar.DAY_OF_MONTH, -1);
+    public Optional<ZonedDateTime> calculatePreviousSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
+        final var previousDay = day.minusDays(1);
 
         final var maybeDusk = this.calculateAstronomicalDusk(previousDay, latitude, longitude);
         final var maybeDawn = this.calculateAstronomicalDawn(day, latitude, longitude);
@@ -113,11 +110,8 @@ public class SolarTime {
         return maybeDusk.flatMap(dusk -> maybeDawn.map(dawn -> calculateMidpoint(dusk, dawn)));
     }
 
-    public Optional<Calendar> calculateNextSolarMidnight(final Calendar day, final double latitude, double longitude) {
-        final var dayDate = day.getTime();
-        final var nextDay = Calendar.getInstance();
-        nextDay.setTime(dayDate);
-        nextDay.add(Calendar.DAY_OF_MONTH, 1);
+    public Optional<ZonedDateTime> calculateNextSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
+        final var nextDay = day.plusDays(1);
 
         final var maybeDusk = this.calculateAstronomicalDusk(day, latitude, longitude);
         final var maybeDawn = this.calculateAstronomicalDawn(nextDay, latitude, longitude);
@@ -125,12 +119,10 @@ public class SolarTime {
         return maybeDusk.flatMap(dusk -> maybeDawn.map(dawn -> calculateMidpoint(dusk, dawn)));
     }
 
-    private Calendar calculateMidpoint(Calendar first, Calendar second) {
-        final var midpoint = GregorianCalendar.getInstance();
-        final var midpointInMillis = (first.getTimeInMillis() + second.getTimeInMillis()) / 2;
-        midpoint.setTimeInMillis(midpointInMillis);
+    private ZonedDateTime calculateMidpoint(ZonedDateTime first, ZonedDateTime second) {
+        final var midpointInMillis = (first.toInstant().toEpochMilli() + second.toInstant().toEpochMilli()) / 2;
 
-        return midpoint;
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(midpointInMillis), first.getZone());
     }
 
 }

@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.GregorianCalendar;
 
 
 @DisplayName("Test conversion between gregorian and julian date")
@@ -20,8 +19,7 @@ class DateConverterTest {
     void toJulianDate(ZonedDateTime gregorian, double expected) {
         final var converter = new DateConverter();
 
-        final var calendar = GregorianCalendar.from(gregorian);
-        final var actual = converter.toJulianDate(calendar);
+        final var actual = converter.toJulianDate(gregorian);
 
         Assertions.assertThat(actual)
                 .isEqualTo(expected);
@@ -47,8 +45,7 @@ class DateConverterTest {
     void chaingedGregorianToJulian(ZonedDateTime gregorian) {
         final var converter = new DateConverter();
 
-        final var calendar = GregorianCalendar.from(gregorian);
-        final var julian = converter.toJulianDate(calendar);
+        final var julian = converter.toJulianDate(gregorian);
         final var actualGregorian = converter.toGregorianDate(julian)
                 .toInstant()
                 .atZone(ZoneOffset.UTC);
