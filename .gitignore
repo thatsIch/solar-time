@@ -1,0 +1,15 @@
+# exclude all
+/*
+
+# include git related files
+!.gitignore
+
+# include source
+!src/
+
+# Maven related files
+!pom.xml
+
+# CMS related files
+!README.md
+!LICENSE
