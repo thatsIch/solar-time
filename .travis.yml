@@ -7,10 +7,5 @@ cache:
   directories:
     - $HOME/.m2
 
-script:
-  - mvn clean verify -Dmaven.test.skip
-  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
-  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)
