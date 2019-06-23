@@ -27,6 +27,32 @@
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
 
+	<name>Solar Time</name>
+	<description>Java Library, Calculate solar times like solar noon, sunrise, sunset, astronomical, nautical and civil dawn/dusks</description>
+	<url>https://github.com/thatsIch/solar-time</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License v2.1</name>
+			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>thatsIch</name>
+			<email>thatsIch@mail.de</email>
+			<organization>thatsIch</organization>
+			<organizationUrl>https://github.com/thatsIch</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/thatsIch/solar-time.git</connection>
+		<developerConnection>scm:git:ssh://github.com:thatsIch/solar-time.git</developerConnection>
+		<url>http://github.com/thatsIch/solar-time/tree/master</url>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
