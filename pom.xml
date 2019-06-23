@@ -126,22 +126,15 @@
 				<version>0.8.4</version>
 				<executions>
 					<execution>
-						<phase>process-test-classes</phase>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
-				</executions>
-			</plugin>
-			<!-- Never debug a test again: Detailed failure reports and hassle free assertions for Java tests - Power Asserts for Java -->
-			<plugin>
-				<groupId>hu.advancedweb</groupId>
-				<artifactId>scott-maven-plugin</artifactId>
-				<version>3.4.1</version>
-				<executions>
 					<execution>
+						<id>report</id>
+						<phase>test</phase>
 						<goals>
-							<goal>prepare-agent</goal>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
