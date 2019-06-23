@@ -9,10 +9,12 @@ public class DawnCalculator {
 
     private final JulianSunriseCalculator julianSunriseCalculator;
     private final DateConverter dateConverter;
+    private final TimeZoneShifter timeZoneShifter;
 
-    public DawnCalculator(JulianSunriseCalculator julianSunriseCalculator, DateConverter dateConverter) {
+    public DawnCalculator(JulianSunriseCalculator julianSunriseCalculator, DateConverter dateConverter, TimeZoneShifter timeZoneShifter) {
         this.julianSunriseCalculator = julianSunriseCalculator;
         this.dateConverter = dateConverter;
+        this.timeZoneShifter = timeZoneShifter;
     }
 
     /**
@@ -23,16 +25,7 @@ public class DawnCalculator {
      */
     public Optional<ZonedDateTime> calculateDawnEvent(final ZonedDateTime day, final double latitude, double longitude, Altitude altitude) {
         return this.julianSunriseCalculator.calculateJulianSunrise(day, latitude, longitude, altitude)
-                .map(jrise -> {
-                    // Convert sunset and sunrise to Gregorian dates, in UTC
-                    final var localTimeSunrise = this.dateConverter.toGregorianDate(jrise);
-
-                    // Convert the sunset and sunrise to the timezone of the day parameter
-                    final var zone = day.getZone();
-                    final var sunriseWithMovedTimeZone = localTimeSunrise.withZoneSameInstant(zone);
-
-                    return sunriseWithMovedTimeZone;
-                });
+                .map(this.dateConverter::toGregorianDate)
+                .map(sunrise -> this.timeZoneShifter.shiftDayToZoneOfOtherDay(sunrise, day));
     }
-
 }

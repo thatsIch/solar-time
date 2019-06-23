@@ -9,6 +9,7 @@ import de.thatsich.solartime.control.JulianSunriseCalculator;
 import de.thatsich.solartime.control.JulianSunsetCalculator;
 import de.thatsich.solartime.control.SolarEquationVariableCalculator;
 import de.thatsich.solartime.control.SolarNoonCalculator;
+import de.thatsich.solartime.control.TimeZoneShifter;
 import de.thatsich.solartime.entity.SolarEquationVariables;
 
 import java.time.ZoneId;
@@ -21,8 +22,9 @@ class Example {
         final var hourAngleCalculator = new HourAngleCalculator();
         final var julianSunsetCalculator = new JulianSunsetCalculator(solarEquationVariableCalculator, hourAngleCalculator);
         final var julianSunriseCalculator = new JulianSunriseCalculator(julianSunsetCalculator, solarEquationVariableCalculator);
-        final var duskCalculator = new DuskCalculator(julianSunsetCalculator, dateConverter);
-        final var dawnCalculator = new DawnCalculator(julianSunriseCalculator, dateConverter);
+        final var timeZoneShifter = new TimeZoneShifter();
+        final var duskCalculator = new DuskCalculator(julianSunsetCalculator, dateConverter, timeZoneShifter);
+        final var dawnCalculator = new DawnCalculator(julianSunriseCalculator, dateConverter, timeZoneShifter);
         final var solarNoonCalculator = new SolarNoonCalculator(solarEquationVariableCalculator, hourAngleCalculator, dateConverter);
         final var solarTime = new SolarTime(dawnCalculator, duskCalculator, solarNoonCalculator);
 

@@ -18,7 +18,6 @@ import java.util.Optional;
  * The formulas used by this class are from the Wikipedia articles on Julian Day
  * and Sunrise Equation. <br>
  *
- * @author Carmen Alvarez
  * @see <a href="http://en.wikipedia.org/wiki/Julian_day">Julian Day on Wikipedia</a>
  * @see <a href="http://en.wikipedia.org/wiki/Sunrise_equation">Sunrise equation on Wikipedia</a>
  */
@@ -41,14 +40,22 @@ public class SolarTime {
      * @param day       The day for which to calculate civil twilight
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
-     * @return a two-element Gregorian Calendar array. The first element is the
-     * civil twilight dawn, the second element is the civil twilight dusk.
-     * This will return null if there is no civil twilight. (Ex: no twilight in Antarctica in December)
+     *
+     * @return civil dawn or empty if there is no civil twilight (e.g. no twilight in Antarctica in December)
      */
     public Optional<ZonedDateTime> calculateCivilDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.CIVIL);
     }
 
+    /**
+     * Calculate the civil twilight time for the given date and given location.
+     *
+     * @param day       The day for which to calculate civil twilight
+     * @param latitude  the latitude of the location in degrees.
+     * @param longitude the longitude of the location in degrees (West is negative)
+     *
+     * @return civil dusk or empty if there is no civil twilight (e.g. no twilight in Antarctica in December)
+     */
     public Optional<ZonedDateTime> calculateCivilDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.CIVIL);
     }
@@ -59,14 +66,22 @@ public class SolarTime {
      * @param day       The day for which to calculate nautical twilight
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
-     * @return a two-element Gregorian Calendar array. The first element is the
-     * nautical twilight dawn, the second element is the nautical twilight dusk.
-     * This will return null if there is no nautical twilight. (Ex: no twilight in Antarctica in December)
+     *
+     * @return nautical dawn or empty if there is no nautical twilight (e.g. no twilight in Antarctica in December)
      */
     public Optional<ZonedDateTime> calculateNauticalDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.NAUTICAL);
     }
 
+    /**
+     * Calculate the nautical twilight time for the given date and given location.
+     *
+     * @param day       The day for which to calculate nautical twilight
+     * @param latitude  the latitude of the location in degrees.
+     * @param longitude the longitude of the location in degrees (West is negative)
+     *
+     * @return nautical dusk or empty if there is no nautical twilight (e.g. no twilight in Antarctica in December)
+     */
     public Optional<ZonedDateTime> calculateNauticalDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.NAUTICAL);
     }
@@ -77,14 +92,22 @@ public class SolarTime {
      * @param day       The day for which to calculate astronomical twilight
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
-     * @return a two-element Gregorian Calendar array. The first element is the
-     * astronomical twilight dawn, the second element is the  astronomical twilight dusk.
-     * This will return null if there is no astronomical twilight. (Ex: no twilight in Antarctica in December)
+     *
+     * @return astronomical dawn or empty if there is no astronomical twilight (e.g. no twilight in Antarctica in December)
      */
     public Optional<ZonedDateTime> calculateAstronomicalDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
     }
 
+    /**
+     * Calculate the astronomical twilight time for the given date and given location.
+     *
+     * @param day       The day for which to calculate astronomical twilight
+     * @param latitude  the latitude of the location in degrees.
+     * @param longitude the longitude of the location in degrees (West is negative)
+     *
+     * @return astronomical dusk or empty if there is no astronomical twilight (e.g. no twilight in Antarctica in December)
+     */
     public Optional<ZonedDateTime> calculateAstronomicalDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
     }
