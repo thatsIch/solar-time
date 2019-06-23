@@ -13,3 +13,6 @@
 # CMS related files
 !README.md
 !LICENSE
+
+# CI related files
+!.travis.yml
