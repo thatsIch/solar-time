@@ -15,3 +15,5 @@ This work is heavily inspired by https://github.com/caarmen/SunriseSunset. The f
 [![Maintenance](https://img.shields.io/maintenance/yes/2019.svg)](https://github.com/thatsIch/solar-time)
 
 [![Build Status](https://travis-ci.org/thatsIch/solar-time.svg?branch=master)](https://travis-ci.org/thatsIch/solar-time)
+
+At the current time Jacoco and Cubertura are broken for JUnit 5 so Code Coverage is removed
