@@ -6,6 +6,11 @@ import java.time.ZonedDateTime;
 
 public class DateConverter {
 
+    private static final int DAYS_PER_4000_YEARS = 146097;
+    private static final int DAYS_PER_CENTURY = 36524;
+    private static final int DAYS_PER_4_YEARS = 1461;
+    private static final int DAYS_PER_5_MONTHS = 153;
+
     /**
      * Convert a Gregorian calendar date to a Julian date. Accuracy is to the
      * second.
@@ -54,11 +59,6 @@ public class DateConverter {
      * @see <a href="http://en.wikipedia.org/wiki/Julian_day#Gregorian_calendar_from_Julian_day_number">Converting from Julian day to Gregorian date, on Wikipedia</a>
      */
     ZonedDateTime toGregorianDate(final double julianDate) {
-        final var DAYS_PER_4000_YEARS = 146097;
-        final var DAYS_PER_CENTURY = 36524;
-        final var DAYS_PER_4_YEARS = 1461;
-        final var DAYS_PER_5_MONTHS = 153;
-
         // this shifts the epoch back by one half day,
         // to start it at 00:00UTC, instead of 12:00 UTC
         final int J = (int) (julianDate + 0.5);
