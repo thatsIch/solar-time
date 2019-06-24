@@ -31,8 +31,6 @@ class Example {
         final var now = ZonedDateTime.now();
         final var latitude = 51.449680;
         final var longitude = 6.973370;
-        //final var latitude = -89.237462;
-        //final var longitude = 144.809434;
 
         solarTime.calculatePreviousSolarMidnight(now, latitude, longitude)
                 .map(dateTime -> dateTime.withZoneSameInstant(ZoneId.systemDefault()))

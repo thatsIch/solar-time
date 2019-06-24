@@ -1,12 +1,12 @@
 Location, ZonedDateTime, Latitude, Longitude, Sunrise, Sunset
 
-LA, 2013-01-20T12:00:00-08:00[America/Los_Angeles], 34.0522, -118.2437, 2013-01-20T06:57:48-08:00[America/Los_Angeles], 2013-01-20T017:11:48-08:00[America/Los_Angeles]
-Paris, 2013-01-20T12:00:00+01:00[Europe/Paris], 48.8567, 2.351, 2013-01-20T08:35:46+01:00[Europe/Paris], 2013-01-20T017:28:48+01:00[Europe/Paris]
-Sydney, 2012-12-25T12:00:00+11:00[Australia/Sydney], -33.86, 151.2111, 2012-12-25T05:44:21+11:00[Australia/Sydney], 2012-12-25T20:07:00+11:00[Australia/Sydney]
+LA, 2013-01-20T12:00:00-08:00[America/Los_Angeles], 34.0522, -118.2437, 2013-01-20T06:57:48-08:00[America/Los_Angeles], 2013-01-20T17:12:42-08:00[America/Los_Angeles]
+Paris, 2013-01-20T12:00:00+01:00[Europe/Paris], 48.8567, 2.351, 2013-01-20T08:35:46+01:00[Europe/Paris], 2013-01-20T17:29:47+01:00[Europe/Paris]
+Sydney, 2012-12-25T12:00:00+11:00[Australia/Sydney], -33.86, 151.2111, 2012-12-25T05:44:21+11:00[Australia/Sydney], 2012-12-25T20:08:31+11:00[Australia/Sydney]
 
-Tokyo, 2013-05-01T12:00:00+09:00[Asia/Tokyo], 35.6938, 139.7036, 2013-05-01T04:50:42+09:00[Asia/Tokyo], 2013-05-01T18:27:00+09:00[Asia/Tokyo]
+Tokyo, 2013-05-01T12:00:00+09:00[Asia/Tokyo], 35.6938, 139.7036, 2013-05-01T04:50:42+09:00[Asia/Tokyo], 2013-05-01T18:28:20+09:00[Asia/Tokyo]
 
-Dublin, 2013-06-05T12:00:00+01:00[Europe/Dublin], 53.3441, -6.2675, 2013-06-05T05:01:51+01:00[Europe/Dublin], 2013-06-05T21:46:00+01:00[Europe/Dublin]
+Dublin, 2013-06-05T12:00:00+01:00[Europe/Dublin], 53.3441, -6.2675, 2013-06-05T05:01:51+01:00[Europe/Dublin], 2013-06-05T21:48:14+01:00[Europe/Dublin]
 # SunriseSunsetTestUtils.testSunriseSunset("CST", "20130622", 41.8781, -87.6298, "05:16", "20:29");
 # SunriseSunsetTestUtils.testSunriseSunset("Pacific/Honolulu", "20150827", 21.3069, -157.8583, "06:13", "18:53");
 # SunriseSunsetTestUtils.testSunriseSunset("America/Argentina/Buenos_Aires", "20130501", -34.6092, -58.3732, "07:29", "18:12");
