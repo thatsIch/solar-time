@@ -16,4 +16,4 @@ This work is heavily inspired by https://github.com/caarmen/SunriseSunset. The f
 
 [![Build Status](https://travis-ci.org/thatsIch/solar-time.svg?branch=master)](https://travis-ci.org/thatsIch/solar-time)
 
-At the current time Jacoco and Cubertura are broken for JUnit 5 so Code Coverage is removed
+[![codecov](https://codecov.io/gh/thatsIch/solar-time/branch/master/graph/badge.svg)](https://codecov.io/gh/thatsIch/solar-time)
