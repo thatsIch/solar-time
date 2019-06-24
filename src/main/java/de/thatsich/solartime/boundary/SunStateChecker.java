@@ -1,6 +1,9 @@
 package de.thatsich.solartime.boundary;
 
+import de.thatsich.solartime.control.HourAngleCalculator;
+import de.thatsich.solartime.control.SolarEquationVariableCalculator;
 import de.thatsich.solartime.entity.DayPeriod;
+import de.thatsich.solartime.entity.SolarEquationVariables;
 
 import java.time.ZonedDateTime;
 
@@ -8,9 +11,13 @@ import java.time.ZonedDateTime;
 public class SunStateChecker {
 
     private final SolarTime solarTime;
+    private final HourAngleCalculator hourAngleCalculator;
+    private final SolarEquationVariableCalculator solarEquationVariableCalculator;
 
-    public SunStateChecker(SolarTime solarTime) {
+    public SunStateChecker(SolarTime solarTime, HourAngleCalculator hourAngleCalculator, SolarEquationVariableCalculator solarEquationVariableCalculator) {
         this.solarTime = solarTime;
+        this.hourAngleCalculator = hourAngleCalculator;
+        this.solarEquationVariableCalculator = solarEquationVariableCalculator;
     }
 
     /**
@@ -233,5 +240,21 @@ public class SunStateChecker {
         if (isAstronomicalTwilight(calendar, latitude, longitude)) return DayPeriod.ASTRONOMICAL_TWILIGHT;
         if (isNight(calendar, latitude, longitude)) return DayPeriod.NIGHT;
         return DayPeriod.NIGHT;
+    }
+
+    public boolean is24HourDayTime(ZonedDateTime day, double latitude, double longitude) {
+        final SolarEquationVariables solarEquationVariables = solarEquationVariableCalculator.calculateSolarEquationVariables(day, longitude);
+        final var sunDeclination = solarEquationVariables.getDelta();
+        final var rads = Math.toRadians(latitude);
+
+        return hourAngleCalculator.is24HourDayTime(rads, sunDeclination);
+    }
+
+    public boolean is24HourNightTime(ZonedDateTime day, double latitude, double longitude) {
+        final SolarEquationVariables solarEquationVariables = solarEquationVariableCalculator.calculateSolarEquationVariables(day, longitude);
+        final var sunDeclination = solarEquationVariables.getDelta();
+        final var rads = Math.toRadians(latitude);
+
+        return hourAngleCalculator.is24HourNightTime(rads, sunDeclination);
     }
 }

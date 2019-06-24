@@ -28,7 +28,7 @@ public class SolarTime {
     private final DuskCalculator duskCalculator;
     private final SolarNoonCalculator solarNoonCalculator;
 
-    public SolarTime(DawnCalculator dawnCalculator, DuskCalculator duskCalculator, SolarNoonCalculator solarNoonCalculator) {
+    SolarTime(DawnCalculator dawnCalculator, DuskCalculator duskCalculator, SolarNoonCalculator solarNoonCalculator) {
         this.dawnCalculator = dawnCalculator;
         this.duskCalculator = duskCalculator;
         this.solarNoonCalculator = solarNoonCalculator;
