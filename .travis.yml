@@ -3,7 +3,7 @@ language: java
 
 addons:
   sonarcloud:
-    organization: "sonarcloud"
+    organization: "thatsich-github"
     token:
       secure: "rUShC3PJGPk+qHLeBsA3nP0W9FLHxZhLgogR5sBv0Qi8wqQwuDtXWI1bVmP1uFJPKtGCGgGOmI25EO0cEO6KR8qdaHJk47iS2SLl46D2esHI/rvQrQKXrsgvQge+DbfzjS66C86TQcNjYN/OH2/Z7m08o0+a0AdpyoIB4w3RuaWRU7V9HQOQEERxzi/up+1RWRJefhhDMZMIg/NCV0i0FpAtPt8MeI9c15tWCqkqmP936etREN5nDfE5LmbGMm3rkx3SXzobPbq/7U/cSjokIHPnE9FTZbptdTvcgR/pT7gz85KawRErhNIehYYcv7XBs1zM3x/mpqE3yK23l2IH4FlSs2V9N95+/wIaT1PgavaUjwjSG3GziGw/6pu3Y7KkrwtprLZyZe/ar62agMrCDGNqEa9ad+mlrZ4grWAZylyKgDeLAGBMqWIfg2tbZEHvzk7+0laasfsGf9HmzGIzGq6y0ZcHCq5sgOA0hmotqAGAhJ86VhFKTGLqCkb5RH9ndlBCdtYAnWJOBhtLC0dJta9Kt54sDgEgOJAcIrP0ffBRlHT24oMiDp6/j+RtdzUZmRv4kGyksn/DXN+eVPj8wTVwxP1RNq0bEvTUHx4AA7ryG3Xa+usstHydA3LcjRzpM+Np2yFTswLXurZ3klgncYVYLob9V9YRTNI/adM8UoM="
 
