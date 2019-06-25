@@ -58,7 +58,7 @@ class SunStateCheckerIsDayTest {
 
     @DisplayName("North Pole")
     @ParameterizedTest(name = "Month {0} should be {1}")
-    @CsvSource({ "1, false", "2, true", "3, true", "4, true", "5, true", "6, true", "7, true", "8, true", "9, true", "10, true", "11, false", "12, false"})
+    @CsvSource({ "1, false", "2, true", "3, true", "4, true", "5, true", "6, true", "7, false", "8, true", "9, true", "10, true", "11, false", "12, false"})
     void checkNorthPole(int month, boolean expected) {
         final var sunStateChecker = new API().getSunStateChecker();
 
@@ -75,7 +75,7 @@ class SunStateCheckerIsDayTest {
 
     @DisplayName("South Pole")
     @ParameterizedTest(name = "Month {0} should be {1}")
-    @CsvSource({ "1, true", "2, true", "3, true", "4, false", "5, false", "6, false", "7, false", "8, false", "9, false", "10, false", "11, false", "12, true"})
+    @CsvSource({ "1, true", "2, true", "3, false", "4, false", "5, false", "6, false", "7, false", "8, false", "9, true", "10, true", "11, true", "12, true"})
     void checkSouthPole(int month, boolean expected) {
         final var sunStateChecker = new API().getSunStateChecker();
 

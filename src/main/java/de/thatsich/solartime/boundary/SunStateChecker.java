@@ -21,31 +21,18 @@ public class SunStateChecker {
     }
 
     /**
-     * @param calendar  a datetime
+     * @param dateTime  a datetime
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
      * @return true if it is day at the given location and given datetime. This returns
      * true if the given datetime at the location is after the sunrise and
      * before the sunset for that location.
      */
-    public boolean isDay(ZonedDateTime calendar, double latitude, double longitude) {
-        return this.solarTime.calculateSunrise(calendar, latitude, longitude)
-                .flatMap(sunrise -> this.solarTime.calculateSunset(calendar, latitude, longitude)
-                .map(sunset -> calendar.isAfter(sunrise) && calendar.isBefore(sunset)))
-                .orElseGet(() -> isDayAtPoles(calendar, latitude));
-    }
-
-    private boolean isDayAtPoles(ZonedDateTime dateTime, double latitude) {
-        int month = dateTime.getMonthValue();
-        if (latitude > 0) {
-            // Always night at the north pole in December
-            // Always day at the north pole in June
-            return 4 <= month && month <= 11;
-        } else {
-            // Always day at the south pole in December
-            // Always night at the south pole in June
-            return month < 4 || 11 < month;
-        }
+    public boolean isDay(ZonedDateTime dateTime, double latitude, double longitude) {
+        return this.solarTime.calculateSunrise(dateTime, latitude, longitude)
+                .flatMap(sunrise -> this.solarTime.calculateSunset(dateTime, latitude, longitude)
+                .map(sunset -> dateTime.isAfter(sunrise) && dateTime.isBefore(sunset)))
+                .orElseGet(() -> is24HourDayTime(dateTime, latitude, longitude));
     }
 
     /**
@@ -60,20 +47,7 @@ public class SunStateChecker {
         return this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude)
                 .flatMap(dawn -> this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude)
                 .map(dusk -> calendar.isBefore(dawn) || calendar.isAfter(dusk)))
-                .orElseGet(() -> isNightAtPoles(calendar, latitude));
-    }
-
-    private boolean isNightAtPoles(ZonedDateTime dateTime, double latitude) {
-        int month = dateTime.getMonthValue();
-        if (latitude > 0) {
-            // Always night at the north pole in December
-            // Always day at the north pole in June
-            return month < 4 || month > 11;
-        } else {
-            // Always day at the south pole in December
-            // Always night at the south pole in June
-            return month >= 4 && month <= 11;
-        }
+                .orElseGet(() -> is24HourNightTime(calendar, latitude, longitude));
     }
 
     private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
