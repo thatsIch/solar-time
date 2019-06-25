@@ -18,7 +18,7 @@ This work is heavily inspired by https://github.com/caarmen/SunriseSunset. The f
 
 [![Codecov Coverage](https://codecov.io/gh/thatsIch/solar-time/branch/master/graph/badge.svg)](https://codecov.io/gh/thatsIch/solar-time)
 [![Coverage Status](https://coveralls.io/repos/github/thatsIch/solar-time/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/thatsIch/solar-time?branch=master)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=thatsIch_solar-time&metric=coverage)](https://sonarcloud.io/dashboard?id=thatsIch_solar-time)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=thatsIch_solar-time&metric=coverage)](https://sonarcloud.io/component_measures?id=thatsIch_solar-time&metric=coverage&view=list)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thatsIch_solar-time&metric=alert_status)](https://sonarcloud.io/dashboard?id=thatsIch_solar-time)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=thatsIch_solar-time&metric=security_rating)](https://sonarcloud.io/dashboard?id=thatsIch_solar-time)
