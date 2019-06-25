@@ -22,4 +22,18 @@ class SolarTimeNauticalDawnTest {
                 .isPresent();
     }
 
+    @Test
+    void isExact() {
+        final var solarTime = new API().getSolarTime();
+
+        final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Berlin"));
+        final var latitude = 51.449680;
+        final var longitude = 6.973370;
+
+        final var actual = solarTime.calculateNauticalDawn(day, latitude, longitude);
+
+        Assertions.assertThat(actual)
+                .contains(ZonedDateTime.of(2019, 6, 24, 3, 15, 15, 0, ZoneId.of("Europe/Berlin")));
+    }
+
 }
