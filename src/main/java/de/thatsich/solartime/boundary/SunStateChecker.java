@@ -39,10 +39,12 @@ public class SunStateChecker {
         int month = dateTime.getMonthValue();
         if (latitude > 0) {
             // Always night at the north pole in December
-            return 4 <= month && month <= 11; // Always day at the north pole in June
+            // Always day at the north pole in June
+            return 4 <= month && month <= 11;
         } else {
             // Always day at the south pole in December
-            return month < 4 || 11 < month; // Always night at the south pole in June
+            // Always night at the south pole in June
+            return month < 4 || 11 < month;
         }
     }
 
@@ -65,10 +67,12 @@ public class SunStateChecker {
         int month = dateTime.getMonthValue();
         if (latitude > 0) {
             // Always night at the north pole in December
-            return month < 4 || month > 11; // Always day at the north pole in June
+            // Always day at the north pole in June
+            return month < 4 || month > 11;
         } else {
             // Always day at the south pole in December
-            return month >= 4 && month <= 11; // Always night at the south pole in June
+            // Always night at the south pole in June
+            return month >= 4 && month <= 11;
         }
     }
 
