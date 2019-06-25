@@ -12,7 +12,7 @@ import de.thatsich.solartime.control.TimeZoneShifter;
 
 public class API {
 
-    public static SolarTime getSolarTime() {
+    public SolarTime getSolarTime() {
         final var dateConverter = new DateConverter();
         final var solarEquationVariableCalculator = new SolarEquationVariableCalculator(dateConverter);
         final var hourAngleCalculator = new HourAngleCalculator();
@@ -27,8 +27,8 @@ public class API {
         return solarTime;
     }
 
-    public static SunStateChecker getSunStateChecker() {
-        final var solarTime = API.getSolarTime();
+    public SunStateChecker getSunStateChecker() {
+        final var solarTime = this.getSolarTime();
         final var hourAngleCalculator = new HourAngleCalculator();
         final var dateConverter = new DateConverter();
         final var solarEquationVariableCalculator = new SolarEquationVariableCalculator(dateConverter);

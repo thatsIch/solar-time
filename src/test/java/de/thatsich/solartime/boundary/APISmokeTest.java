@@ -7,13 +7,13 @@ class APISmokeTest {
 
     @Test
     void setupSolarTime() {
-        Assertions.assertThatCode(API::getSolarTime)
+        Assertions.assertThatCode(() -> new API().getSolarTime())
                 .doesNotThrowAnyException();
     }
 
     @Test
     void setupSunStateChecker() {
-        Assertions.assertThatCode(API::getSunStateChecker)
+        Assertions.assertThatCode(() -> new API().getSunStateChecker())
                 .doesNotThrowAnyException();
     }
 

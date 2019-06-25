@@ -11,7 +11,8 @@ class Example {
     private static final Logger LOGGER = Logger.getLogger("Example");
 
     public static void main(String[] args) {
-        final var solarTime = API.getSolarTime();
+        final var api = new API();
+        final var solarTime = api.getSolarTime();
 
         final var now = ZonedDateTime.now();
         final var latitude = 51.449680;
@@ -64,7 +65,7 @@ class Example {
                 .map(dateTime -> dateTime.withZoneSameInstant(ZoneId.systemDefault()))
                 .ifPresent(time -> LOGGER.info("Next Solar Midnight: " + time));
 
-        final var sunStateChecker = API.getSunStateChecker();
+        final var sunStateChecker = api.getSunStateChecker();
         LOGGER.info("is 24-hour day: " + sunStateChecker.is24HourDayTime(now, latitude, longitude));
         LOGGER.info("is 24-hour night: " + sunStateChecker.is24HourNightTime(now, latitude, longitude));
     }

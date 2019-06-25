@@ -87,7 +87,7 @@ public class DateConverter {
         final int m = (da * 5 + 308) / DAYS_PER_5_MONTHS - 2;
 
         // this is the number of days elapsed since day 1 of the month at 00:00 UTC,
-        // including fractions of one day);
+        // including fractions of one day
         final int d = da - ((m + 4) * DAYS_PER_5_MONTHS) / 5 + 122;
 
         final int year = y - 4800 + (m + 2) / 12;
