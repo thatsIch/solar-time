@@ -34,6 +34,41 @@ public class SolarTime {
         this.solarNoonCalculator = solarNoonCalculator;
     }
 
+    public Optional<ZonedDateTime> calculatePreviousSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
+        final var previousDay = day.minusDays(1);
+
+        final var maybeDusk = this.calculateAstronomicalDusk(previousDay, latitude, longitude);
+        final var maybeDawn = this.calculateAstronomicalDawn(day, latitude, longitude);
+
+        return maybeDusk.flatMap(dusk -> maybeDawn.map(dawn -> calculateMidpoint(dusk, dawn)));
+    }
+
+    /**
+     * Calculate the astronomical twilight time for the given date and given location.
+     *
+     * @param day       The day for which to calculate astronomical twilight
+     * @param latitude  the latitude of the location in degrees.
+     * @param longitude the longitude of the location in degrees (West is negative)
+     *
+     * @return astronomical dawn or empty if there is no astronomical twilight (e.g. no twilight in Antarctica in December)
+     */
+    public Optional<ZonedDateTime> calculateAstronomicalDawn(final ZonedDateTime day, final double latitude, double longitude) {
+        return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
+    }
+
+    /**
+     * Calculate the nautical twilight time for the given date and given location.
+     *
+     * @param day       The day for which to calculate nautical twilight
+     * @param latitude  the latitude of the location in degrees.
+     * @param longitude the longitude of the location in degrees (West is negative)
+     *
+     * @return nautical dawn or empty if there is no nautical twilight (e.g. no twilight in Antarctica in December)
+     */
+    public Optional<ZonedDateTime> calculateNauticalDawn(final ZonedDateTime day, final double latitude, double longitude) {
+        return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.NAUTICAL);
+    }
+
     /**
      * Calculate the civil twilight time for the given date and given location.
      *
@@ -45,6 +80,18 @@ public class SolarTime {
      */
     public Optional<ZonedDateTime> calculateCivilDawn(final ZonedDateTime day, final double latitude, double longitude) {
         return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.CIVIL);
+    }
+
+    public Optional<ZonedDateTime> calculateSunrise(final ZonedDateTime day, final double latitude, double longitude) {
+        return this.dawnCalculator.calculateDawnEvent(day, latitude,longitude, Altitude.SUNRISE_SUNSET);
+    }
+
+    public Optional<ZonedDateTime> calculateSolarNoon(final ZonedDateTime day, final double latitude, double longitude) {
+        return this.solarNoonCalculator.calculateSolarNoon(day, latitude, longitude);
+    }
+
+    public Optional<ZonedDateTime> calculateSunset(final ZonedDateTime day, final double latitude, double longitude) {
+        return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.SUNRISE_SUNSET);
     }
 
     /**
@@ -67,19 +114,6 @@ public class SolarTime {
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
      *
-     * @return nautical dawn or empty if there is no nautical twilight (e.g. no twilight in Antarctica in December)
-     */
-    public Optional<ZonedDateTime> calculateNauticalDawn(final ZonedDateTime day, final double latitude, double longitude) {
-        return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.NAUTICAL);
-    }
-
-    /**
-     * Calculate the nautical twilight time for the given date and given location.
-     *
-     * @param day       The day for which to calculate nautical twilight
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     *
      * @return nautical dusk or empty if there is no nautical twilight (e.g. no twilight in Antarctica in December)
      */
     public Optional<ZonedDateTime> calculateNauticalDusk(final ZonedDateTime day, final double latitude, double longitude) {
@@ -93,44 +127,10 @@ public class SolarTime {
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
      *
-     * @return astronomical dawn or empty if there is no astronomical twilight (e.g. no twilight in Antarctica in December)
-     */
-    public Optional<ZonedDateTime> calculateAstronomicalDawn(final ZonedDateTime day, final double latitude, double longitude) {
-        return this.dawnCalculator.calculateDawnEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
-    }
-
-    /**
-     * Calculate the astronomical twilight time for the given date and given location.
-     *
-     * @param day       The day for which to calculate astronomical twilight
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     *
      * @return astronomical dusk or empty if there is no astronomical twilight (e.g. no twilight in Antarctica in December)
      */
     public Optional<ZonedDateTime> calculateAstronomicalDusk(final ZonedDateTime day, final double latitude, double longitude) {
         return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.ASTRONOMICAL);
-    }
-
-    public Optional<ZonedDateTime> calculateSunrise(final ZonedDateTime day, final double latitude, double longitude) {
-        return this.dawnCalculator.calculateDawnEvent(day, latitude,longitude, Altitude.SUNRISE_SUNSET);
-    }
-
-    public Optional<ZonedDateTime> calculateSunset(final ZonedDateTime day, final double latitude, double longitude) {
-        return this.duskCalculator.calculateDuskEvent(day, latitude, longitude, Altitude.SUNRISE_SUNSET);
-    }
-
-    public Optional<ZonedDateTime> calculateSolarNoon(final ZonedDateTime day, final double latitude, double longitude) {
-        return this.solarNoonCalculator.calculateSolarNoon(day, latitude, longitude);
-    }
-
-    public Optional<ZonedDateTime> calculatePreviousSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
-        final var previousDay = day.minusDays(1);
-
-        final var maybeDusk = this.calculateAstronomicalDusk(previousDay, latitude, longitude);
-        final var maybeDawn = this.calculateAstronomicalDawn(day, latitude, longitude);
-
-        return maybeDusk.flatMap(dusk -> maybeDawn.map(dawn -> calculateMidpoint(dusk, dawn)));
     }
 
     public Optional<ZonedDateTime> calculateNextSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
