@@ -10,6 +10,7 @@ import de.thatsich.solartime.control.SolarEquationVariableCalculator;
 import de.thatsich.solartime.control.SolarNoonCalculator;
 import de.thatsich.solartime.control.TimeZoneShifter;
 
+@SuppressWarnings("WeakerAccess")
 public class API {
 
     public SolarTime getSolarTime() {

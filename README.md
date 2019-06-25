@@ -25,3 +25,32 @@ This work is heavily inspired by https://github.com/caarmen/SunriseSunset. The f
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=thatsIch_solar-time&metric=sqale_index)](https://sonarcloud.io/dashboard?id=thatsIch_solar-time)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7bebabb71ca31cf2aa8d/maintainability)](https://codeclimate.com/github/thatsIch/solar-time/maintainability)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cb6ede108aca42b7a0683c8a55c10bb2)](https://www.codacy.com/app/thatsIch/solar-time?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thatsIch/solar-time&amp;utm_campaign=Badge_Grade)
+
+## Example Usage
+
+Entrypoint is the `API`. You can instatiate it via `new API()` to retrieve the `SolarTime` and `SunStateChecker` endpoints.
+
+```java
+final var api = new API();
+final var solarTime = api.getSolarTime();
+
+final var now = ZonedDateTime.now();
+final var latitude = 51.449680;
+final var longitude = 6.973370;
+
+solarTime.calculateNauticalDawn(now, latitude, longitude)
+        .map(dateTime -> dateTime.withZoneSameInstant(ZoneId.systemDefault()))
+        .map(ZonedDateTime::toLocalDateTime)
+        .ifPresent(time -> LOGGER.info("Nautical Dawn: " + time));
+```
+
+> INFO: Nautical Dawn: 2019-06-25T03:15:46
+
+```java
+final var sunStateChecker = api.getSunStateChecker();
+LOGGER.info("is 24-hour day: " + sunStateChecker.is24HourDayTime(now, latitude, longitude));
+```
+
+> INFO: is 24-hour day: false
+
+For more examples check the [wiki](https://github.com/thatsIch/solar-time/wiki/Examples)
