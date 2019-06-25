@@ -115,13 +115,22 @@ public class SunStateChecker {
     }
 
     public DayPeriod getDayPeriod(ZonedDateTime dateTime, double latitude, double longitude) {
-        if (isDay(dateTime, latitude, longitude)) return DayPeriod.DAY;
-        if (isCivilTwilight(dateTime, latitude, longitude)) return DayPeriod.CIVIL_TWILIGHT;
-        if (isNauticalTwilight(dateTime, latitude, longitude)) return DayPeriod.NAUTICAL_TWILIGHT;
-        if (isAstronomicalTwilight(dateTime, latitude, longitude)) return DayPeriod.ASTRONOMICAL_TWILIGHT;
-        if (isNight(dateTime, latitude, longitude)) return DayPeriod.NIGHT;
+        final DayPeriod period;
+        if (isDay(dateTime, latitude, longitude)) {
+            period = DayPeriod.DAY;
+        } else if (isCivilTwilight(dateTime, latitude, longitude)) {
+            period = DayPeriod.CIVIL_TWILIGHT;
+        } else if (isNauticalTwilight(dateTime, latitude, longitude)) {
+            period = DayPeriod.NAUTICAL_TWILIGHT;
+        } else if (isAstronomicalTwilight(dateTime, latitude, longitude)) {
+            period = DayPeriod.ASTRONOMICAL_TWILIGHT;
+        } else if (isNight(dateTime, latitude, longitude)) {
+            period = DayPeriod.NIGHT;
+        } else {
+            period = DayPeriod.NIGHT;
+        }
 
-        return DayPeriod.NIGHT;
+        return period;
     }
 
     public boolean is24HourDayTime(ZonedDateTime day, double latitude, double longitude) {
