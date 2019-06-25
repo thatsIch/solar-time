@@ -16,3 +16,6 @@
 
 # CI related files
 !.travis.yml
+
+# Code Quality related files
+!sonar-project.properties
