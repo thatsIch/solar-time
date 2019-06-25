@@ -3,6 +3,8 @@ package de.thatsich.solartime.boundary;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -54,94 +56,38 @@ class SunStateCheckerIsDayTest {
                 .isFalse();
     }
 
-    @Test
-    @DisplayName("Always night at the north pole in December")
-    void alwaysNightAtNorthPoleInDecember() {
+    @DisplayName("North Pole")
+    @ParameterizedTest(name = "Month {0} should be {1}")
+    @CsvSource({ "1, false", "2, true", "3, true", "4, true", "5, true", "6, true", "7, true", "8, true", "9, true", "10, true", "11, false", "12, false"})
+    void checkNorthPole(int month, boolean expected) {
         final var sunStateChecker = new API().getSunStateChecker();
 
-        final var day = ZonedDateTime.of(2019, 12, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
+        final var day = ZonedDateTime.of(2019, month, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
         final var latitude = 69.660716;
         final var longitude = 18.925278;
 
         final var actual = sunStateChecker.isDay(day, latitude, longitude);
 
         Assertions.assertThat(actual)
-                .isFalse();
+                .isEqualTo(expected);
     }
 
-    @Test
-    @DisplayName("Always night at the north pole in January")
-    void alwaysNightAtNorthPoleInJanuary() {
+
+    @DisplayName("South Pole")
+    @ParameterizedTest(name = "Month {0} should be {1}")
+    @CsvSource({ "1, true", "2, true", "3, true", "4, false", "5, false", "6, false", "7, false", "8, false", "9, false", "10, false", "11, false", "12, true"})
+    void checkSouthPole(int month, boolean expected) {
         final var sunStateChecker = new API().getSunStateChecker();
 
-        final var day = ZonedDateTime.of(2019, 1, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
-        final var latitude = 69.660716;
-        final var longitude = 18.925278;
-
-        final var actual = sunStateChecker.isDay(day, latitude, longitude);
-
-        Assertions.assertThat(actual)
-                .isFalse();
-    }
-
-    @Test
-    @DisplayName("Always day at the north pole in june")
-    void alwaysDayAtNorthPoleInJune() {
-        final var sunStateChecker = new API().getSunStateChecker();
-
-        final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
-        final var latitude = 69.660716;
-        final var longitude = 18.925278;
-
-        final var actual = sunStateChecker.isDay(day, latitude, longitude);
-
-        Assertions.assertThat(actual)
-                .isTrue();
-    }
-
-    @Test
-    @DisplayName("Always day at the south pole in december")
-    void alwaysDayAtSouthPoleInDecember() {
-        final var sunStateChecker = new API().getSunStateChecker();
-
-        final var day = ZonedDateTime.of(2019, 12, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
+        final var day = ZonedDateTime.of(2019, month, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
         final var latitude = -90;
         final var longitude = 0;
 
         final var actual = sunStateChecker.isDay(day, latitude, longitude);
 
         Assertions.assertThat(actual)
-                .isTrue();
+                .isEqualTo(expected);
     }
 
-    @Test
-    @DisplayName("Always day at the south pole in January")
-    void alwaysDayAtSouthPoleInJanuary() {
-        final var sunStateChecker = new API().getSunStateChecker();
-
-        final var day = ZonedDateTime.of(2019, 1, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
-        final var latitude = -90;
-        final var longitude = 0;
-
-        final var actual = sunStateChecker.isDay(day, latitude, longitude);
-
-        Assertions.assertThat(actual)
-                .isTrue();
-    }
-
-    @Test
-    @DisplayName("Always night at the south pole in june")
-    void alwaysNightAtSouthPoleInJune() {
-        final var sunStateChecker = new API().getSunStateChecker();
-
-        final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
-        final var latitude = -90;
-        final var longitude = 0;
-
-        final var actual = sunStateChecker.isDay(day, latitude, longitude);
-
-        Assertions.assertThat(actual)
-                .isFalse();
-    }
 
 }
