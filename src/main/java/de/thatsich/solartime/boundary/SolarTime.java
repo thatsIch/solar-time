@@ -37,10 +37,9 @@ public class SolarTime {
     public Optional<ZonedDateTime> calculatePreviousSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
         final var previousDay = day.minusDays(1);
 
-        final var maybeDusk = this.calculateAstronomicalDusk(previousDay, latitude, longitude);
-        final var maybeDawn = this.calculateAstronomicalDawn(day, latitude, longitude);
-
-        return maybeDusk.flatMap(dusk -> maybeDawn.map(dawn -> calculateMidpoint(dusk, dawn)));
+        return this.calculateAstronomicalDusk(previousDay, latitude, longitude)
+                .flatMap(dusk -> this.calculateAstronomicalDawn(day, latitude, longitude)
+                .map(dawn -> calculateMidpoint(dusk, dawn)));
     }
 
     /**
@@ -136,10 +135,9 @@ public class SolarTime {
     public Optional<ZonedDateTime> calculateNextSolarMidnight(final ZonedDateTime day, final double latitude, double longitude) {
         final var nextDay = day.plusDays(1);
 
-        final var maybeDusk = this.calculateAstronomicalDusk(day, latitude, longitude);
-        final var maybeDawn = this.calculateAstronomicalDawn(nextDay, latitude, longitude);
-
-        return maybeDusk.flatMap(dusk -> maybeDawn.map(dawn -> calculateMidpoint(dusk, dawn)));
+        return this.calculateAstronomicalDusk(day, latitude, longitude)
+                .flatMap(dusk -> this.calculateAstronomicalDawn(nextDay, latitude, longitude)
+                .map(dawn -> calculateMidpoint(dusk, dawn)));
     }
 
     private ZonedDateTime calculateMidpoint(ZonedDateTime first, ZonedDateTime second) {
