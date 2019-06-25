@@ -55,8 +55,8 @@ class SunStateCheckerIsDayTest {
     }
 
     @Test
-    @DisplayName("In Tromsø, Norway there is a 24h Night")
-    void alwaysNightAtNorthPoles() {
+    @DisplayName("Always night at the north pole in december")
+    void alwaysNightAtNorthPoleInDecember() {
         final var sunStateChecker = new API().getSunStateChecker();
 
         final var day = ZonedDateTime.of(2019, 12, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
@@ -67,6 +67,21 @@ class SunStateCheckerIsDayTest {
 
         Assertions.assertThat(actual)
                 .isFalse();
+    }
+
+    @Test
+    @DisplayName("Always day at the north pole in june")
+    void alwaysDayAtNorthPoleInJune() {
+        final var sunStateChecker = new API().getSunStateChecker();
+
+        final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
+        final var latitude = 69.660716;
+        final var longitude = 18.925278;
+
+        final var actual = sunStateChecker.isDay(day, latitude, longitude);
+
+        Assertions.assertThat(actual)
+                .isTrue();
     }
 
     @Test
@@ -82,6 +97,21 @@ class SunStateCheckerIsDayTest {
 
         Assertions.assertThat(actual)
                 .isTrue();
+    }
+
+    @Test
+    @DisplayName("Always night at the south pole in june")
+    void alwaysNightAtSouthPoleInJune() {
+        final var sunStateChecker = new API().getSunStateChecker();
+
+        final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Istanbul"));
+        final var latitude = -90;
+        final var longitude = 0;
+
+        final var actual = sunStateChecker.isDay(day, latitude, longitude);
+
+        Assertions.assertThat(actual)
+                .isFalse();
     }
 
 }
