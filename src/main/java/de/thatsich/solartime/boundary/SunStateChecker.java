@@ -29,25 +29,21 @@ public class SunStateChecker {
      * before the sunset for that location.
      */
     public boolean isDay(ZonedDateTime calendar, double latitude, double longitude) {
-        final var maybeSunrise = this.solarTime.calculateSunrise(calendar, latitude, longitude);
-        final var maybeSunset = this.solarTime.calculateSunset(calendar, latitude, longitude);
+        return this.solarTime.calculateSunrise(calendar, latitude, longitude)
+                .flatMap(sunrise -> this.solarTime.calculateSunset(calendar, latitude, longitude)
+                .map(sunset -> calendar.isAfter(sunrise) && calendar.isBefore(sunset)))
+                .orElseGet(() -> isDayAtPoles(calendar, latitude));
+    }
 
-        // In extreme latitudes, there may be no sunrise/sunset time in summer or
-        // winter, because it will be day or night 24 hours
-        if (maybeSunrise.isEmpty() ||maybeSunset.isEmpty()) {
-            int month = calendar.getMonthValue();
-            if (latitude > 0) {
-                // Always night at the north pole in December
-                return 4 <= month && month <= 11; // Always day at the north pole in June
-            } else {
-                // Always day at the south pole in December
-                return month < 4 || 11 < month; // Always night at the south pole in June
-            }
+    private boolean isDayAtPoles(ZonedDateTime dateTime, double latitude) {
+        int month = dateTime.getMonthValue();
+        if (latitude > 0) {
+            // Always night at the north pole in December
+            return 4 <= month && month <= 11; // Always day at the north pole in June
+        } else {
+            // Always day at the south pole in December
+            return month < 4 || 11 < month; // Always night at the south pole in June
         }
-        final var sunrise = maybeSunrise.get();
-        final var sunset = maybeSunset.get();
-
-        return calendar.isAfter(sunrise) && calendar.isBefore(sunset);
     }
 
     /**
@@ -59,23 +55,21 @@ public class SunStateChecker {
      * the astronomical twilight dawn.
      */
     public boolean isNight(ZonedDateTime calendar, double latitude, double longitude) {
-        final var maybeDawn = this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude);
-        final var maybeDusk = this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude);
-        if (maybeDawn.isEmpty() ||maybeDusk.isEmpty()) {
-            int month = calendar.getMonthValue();
-            if (latitude > 0) {
-                // Always night at the north pole in December
-                return month < 4 || month > 11; // Always day at the north pole in June
-            } else {
-                // Always day at the south pole in December
-                return month >= 4 && month <= 11; // Always night at the south pole in June
-            }
+        return this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude)
+                .flatMap(dawn -> this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude)
+                .map(dusk -> calendar.isBefore(dawn) || calendar.isAfter(dusk)))
+                .orElseGet(() -> isNightAtPoles(calendar, latitude));
+    }
+
+    private boolean isNightAtPoles(ZonedDateTime dateTime, double latitude) {
+        int month = dateTime.getMonthValue();
+        if (latitude > 0) {
+            // Always night at the north pole in December
+            return month < 4 || month > 11; // Always day at the north pole in June
+        } else {
+            // Always day at the south pole in December
+            return month >= 4 && month <= 11; // Always night at the south pole in June
         }
-
-        final var dawn = maybeDawn.get();
-        final var dusk = maybeDusk.get();
-
-        return calendar.isBefore(dawn) || calendar.isAfter(dusk);
     }
 
     private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
@@ -94,15 +88,10 @@ public class SunStateChecker {
      * or between civil twilight dawn and sunrise.
      */
     public boolean isCivilTwilight(ZonedDateTime calendar, double latitude, double longitude) {
-        final var maybeSunset = this.solarTime.calculateSunset(calendar, latitude, longitude);
-        final var maybeSunrise = this.solarTime.calculateSunrise(calendar, latitude, longitude);
-        final var maybeCivilDusk = this.solarTime.calculateCivilDusk(calendar, latitude, longitude);
-        final var maybeCivilDawn = this.solarTime.calculateCivilDawn(calendar, latitude, longitude);
-
-        return maybeSunset
-                .flatMap(sunset -> maybeSunrise
-                .flatMap(sunrise -> maybeCivilDusk
-                .flatMap(civilDusk -> maybeCivilDawn
+        return this.solarTime.calculateSunset(calendar, latitude, longitude)
+                .flatMap(sunset -> this.solarTime.calculateSunrise(calendar, latitude, longitude)
+                .flatMap(sunrise -> this.solarTime.calculateCivilDusk(calendar, latitude, longitude)
+                .flatMap(civilDusk -> this.solarTime.calculateCivilDawn(calendar, latitude, longitude)
                 .map(civilDawn -> inBetween(calendar, civilDawn, sunrise, sunset, civilDusk))))).
                 orElse(false);
     }
@@ -116,15 +105,10 @@ public class SunStateChecker {
      * or between nautical and civil twilight dawn.
      */
     public boolean isNauticalTwilight(ZonedDateTime calendar, double latitude, double longitude) {
-        final var maybeCivilDusk = this.solarTime.calculateCivilDusk(calendar, latitude, longitude);
-        final var maybeCivilDawn = this.solarTime.calculateCivilDawn(calendar, latitude, longitude);
-        final var maybeNauticalDawn = this.solarTime.calculateNauticalDawn(calendar, latitude, longitude);
-        final var maybeNauticalDusk = this.solarTime.calculateNauticalDusk(calendar, latitude, longitude);
-
-        return maybeNauticalDawn
-                .flatMap(nauticalDawn -> maybeNauticalDusk
-                .flatMap(nauticalDusk -> maybeCivilDusk
-                .flatMap(civilDusk -> maybeCivilDawn
+        return this.solarTime.calculateNauticalDawn(calendar, latitude, longitude)
+                .flatMap(nauticalDawn -> this.solarTime.calculateNauticalDusk(calendar, latitude, longitude)
+                .flatMap(nauticalDusk -> this.solarTime.calculateCivilDusk(calendar, latitude, longitude)
+                .flatMap(civilDusk -> this.solarTime.calculateCivilDawn(calendar, latitude, longitude)
                 .map(civilDawn -> inBetween(calendar, nauticalDawn, civilDawn, civilDusk, nauticalDusk))))).
                 orElse(false);
     }
@@ -138,15 +122,10 @@ public class SunStateChecker {
      * or between astronomical and nautical twilight dawn.
      */
     public boolean isAstronomicalTwilight(ZonedDateTime calendar, double latitude, double longitude) {
-        final var maybeNauticalDawn = this.solarTime.calculateNauticalDawn(calendar, latitude, longitude);
-        final var maybeNauticalDusk = this.solarTime.calculateNauticalDusk(calendar, latitude, longitude);
-        final var maybeAstronomicalDusk = this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude);
-        final var maybeAstronomicalDawn = this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude);
-
-        return maybeNauticalDawn
-                .flatMap(nauticalDawn -> maybeNauticalDusk
-                .flatMap(nauticalDusk -> maybeAstronomicalDusk
-                .flatMap(astronomicalDusk -> maybeAstronomicalDawn
+        return this.solarTime.calculateNauticalDawn(calendar, latitude, longitude)
+                .flatMap(nauticalDawn -> this.solarTime.calculateNauticalDusk(calendar, latitude, longitude)
+                .flatMap(nauticalDusk -> this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude)
+                .flatMap(astronomicalDusk -> this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude)
                 .map(astronomicalDawn -> inBetween(calendar, astronomicalDawn, nauticalDawn, nauticalDusk, astronomicalDusk))))).
                 orElse(false);
     }
