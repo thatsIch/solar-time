@@ -16,8 +16,9 @@ cache:
   - "$HOME/.sonar/cache"
 
 script:
-  - mvn clean verify sonar:sonar -Dsonar.projectKey=thatsIch_solar-time -Dsonar.organization=thatsich-github -Dsonar.host.url=https://sonarcloud.io
+  - mvn clean verify
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 - mvn coveralls:report
+- mvn sonar:sonar -Dsonar.projectKey=thatsIch_solar-time -Dsonar.organization=thatsich-github -Dsonar.host.url=https://sonarcloud.io
