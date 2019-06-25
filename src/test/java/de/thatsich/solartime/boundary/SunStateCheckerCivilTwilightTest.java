@@ -11,7 +11,7 @@ class SunStateCheckerCivilTwilightTest {
 
     @Test
     @DisplayName("At 2019-06-24T05:00:00+02:00[Europe/Berlin] is a Civil Twilight in Europe")
-    void isNight() {
+    void civilTwilight() {
         final var sunStateChecker = new API().getSunStateChecker();
 
         final var day = ZonedDateTime.of(2019, 6, 24, 5, 0, 0, 0, ZoneId.of("Europe/Berlin"));

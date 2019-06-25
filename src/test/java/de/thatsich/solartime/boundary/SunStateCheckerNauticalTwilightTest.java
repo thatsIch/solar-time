@@ -11,7 +11,7 @@ class SunStateCheckerNauticalTwilightTest {
 
     @Test
     @DisplayName("At 2019-06-24T3:16:00+02:00[Europe/Berlin] is Nautical Twilight in Europe")
-    void isNight() {
+    void isNauticalTwilight() {
         final var sunStateChecker = new API().getSunStateChecker();
 
         final var day = ZonedDateTime.of(2019, 6, 24, 3, 16, 0, 0, ZoneId.of("Europe/Berlin"));
