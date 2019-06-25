@@ -44,7 +44,7 @@ class SunStateCheckerIsDayTest {
     void afterDay() {
         final var sunStateChecker = new API().getSunStateChecker();
 
-        final var day = ZonedDateTime.of(2019, 6, 24, 1, 0, 0, 0, ZoneId.of("Europe/Berlin"));
+        final var day = ZonedDateTime.of(2019, 6, 24, 23, 0, 0, 0, ZoneId.of("Europe/Berlin"));
         final var latitude = 51.449680;
         final var longitude = 6.973370;
 
