@@ -124,9 +124,8 @@ public class SunStateChecker {
             period = DayPeriod.NAUTICAL_TWILIGHT;
         } else if (isAstronomicalTwilight(dateTime, latitude, longitude)) {
             period = DayPeriod.ASTRONOMICAL_TWILIGHT;
-        } else if (isNight(dateTime, latitude, longitude)) {
-            period = DayPeriod.NIGHT;
         } else {
+            // no need to call isNight here if this is the default case
             period = DayPeriod.NIGHT;
         }
 
