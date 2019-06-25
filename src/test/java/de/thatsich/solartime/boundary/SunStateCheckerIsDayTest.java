@@ -11,7 +11,7 @@ class SunStateCheckerIsDayTest {
 
     @Test
     @DisplayName("At 2019-06-24T12:00:00+02:00[Europe/Berlin] is Day in Europe")
-    void isDay() {
+    void happyPath_dayIsAfterSunriseAndBeforeSunset() {
         final var sunStateChecker = new API().getSunStateChecker();
 
         final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Berlin"));
