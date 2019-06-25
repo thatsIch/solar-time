@@ -4,6 +4,7 @@ import de.thatsich.solartime.control.HourAngleCalculator;
 import de.thatsich.solartime.control.SolarEquationVariableCalculator;
 import de.thatsich.solartime.entity.DayPeriod;
 import de.thatsich.solartime.entity.SolarEquationVariables;
+import de.thatsich.solartime.entity.TimeSpan;
 
 import java.time.ZonedDateTime;
 
@@ -63,7 +64,7 @@ public class SunStateChecker {
                 .flatMap(sunset -> this.solarTime.calculateSunrise(calendar, latitude, longitude)
                 .flatMap(sunrise -> this.solarTime.calculateCivilDusk(calendar, latitude, longitude)
                 .flatMap(civilDusk -> this.solarTime.calculateCivilDawn(calendar, latitude, longitude)
-                .map(civilDawn -> inBetween(calendar, civilDawn, sunrise, sunset, civilDusk))))).
+                .map(civilDawn -> inBetween(calendar, new TimeSpan(civilDawn, sunrise), new TimeSpan(sunset, civilDusk)))))).
                 orElse(false);
     }
 
@@ -80,7 +81,7 @@ public class SunStateChecker {
                 .flatMap(nauticalDawn -> this.solarTime.calculateNauticalDusk(calendar, latitude, longitude)
                 .flatMap(nauticalDusk -> this.solarTime.calculateCivilDusk(calendar, latitude, longitude)
                 .flatMap(civilDusk -> this.solarTime.calculateCivilDawn(calendar, latitude, longitude)
-                .map(civilDawn -> inBetween(calendar, nauticalDawn, civilDawn, civilDusk, nauticalDusk))))).
+                .map(civilDawn -> inBetween(calendar, new TimeSpan(nauticalDawn, civilDawn), new TimeSpan(civilDusk, nauticalDusk)))))).
                 orElse(false);
     }
 
@@ -97,7 +98,7 @@ public class SunStateChecker {
                 .flatMap(nauticalDawn -> this.solarTime.calculateNauticalDusk(calendar, latitude, longitude)
                 .flatMap(nauticalDusk -> this.solarTime.calculateAstronomicalDusk(calendar, latitude, longitude)
                 .flatMap(astronomicalDusk -> this.solarTime.calculateAstronomicalDawn(calendar, latitude, longitude)
-                .map(astronomicalDawn -> inBetween(calendar, astronomicalDawn, nauticalDawn, nauticalDusk, astronomicalDusk))))).
+                .map(astronomicalDawn -> inBetween(calendar, new TimeSpan(astronomicalDawn, nauticalDawn), new TimeSpan(nauticalDusk, astronomicalDusk)))))).
                 orElse(false);
     }
 
@@ -139,9 +140,9 @@ public class SunStateChecker {
         return hourAngleCalculator.is24HourNightTime(rads, sunDeclination);
     }
 
-    private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
-        final var inEarly = now.isAfter(earlier) && now.isBefore(early);
-        final var inLater = now.isAfter(late) && now.isBefore(later);
+    private boolean inBetween(ZonedDateTime now, TimeSpan early, TimeSpan late) {
+        final var inEarly = now.isAfter(early.getEarlier()) && now.isBefore(early.getLater());
+        final var inLater = now.isAfter(late.getEarlier()) && now.isBefore(late.getLater());
 
         return inEarly || inLater;
     }
