@@ -40,4 +40,52 @@ class SunStateCheckerNauticalTwilightTest {
                 .isTrue();
     }
 
+    @Test
+    @DisplayName("At 2019-06-24T03:00:00+02:00[Europe/Berlin] is no Nautical Twilight in Europe")
+    void before() {
+        final var sunStateChecker = new API().getSunStateChecker();
+
+        final var day = ZonedDateTime.of(2019, 6, 24, 3, 0, 0, 0, ZoneId.of("Europe/Berlin"));
+        final var latitude = 51.449680;
+        final var longitude = 6.973370;
+
+        new API().getSolarTime().calculateNauticalDusk(day, latitude, longitude).ifPresent(System.out::println);
+        final var actual = sunStateChecker.isNauticalTwilight(day, latitude, longitude);
+
+        Assertions.assertThat(actual)
+                .isFalse();
+    }
+
+    @Test
+    @DisplayName("At 2019-06-24T12:00:00+02:00[Europe/Berlin] is no Nautical Twilight in Europe")
+    void betweenBothTimeSpans() {
+        final var sunStateChecker = new API().getSunStateChecker();
+
+        final var day = ZonedDateTime.of(2019, 6, 24, 12, 0, 0, 0, ZoneId.of("Europe/Berlin"));
+        final var latitude = 51.449680;
+        final var longitude = 6.973370;
+
+        new API().getSolarTime().calculateNauticalDusk(day, latitude, longitude).ifPresent(System.out::println);
+        final var actual = sunStateChecker.isNauticalTwilight(day, latitude, longitude);
+
+        Assertions.assertThat(actual)
+                .isFalse();
+    }
+
+    @Test
+    @DisplayName("At 2019-06-24T23:55:00+02:00[Europe/Berlin] is no Nautical Twilight in Europe")
+    void after() {
+        final var sunStateChecker = new API().getSunStateChecker();
+
+        final var day = ZonedDateTime.of(2019, 6, 24, 23, 59, 0, 0, ZoneId.of("Europe/Berlin"));
+        final var latitude = 51.449680;
+        final var longitude = 6.973370;
+
+        new API().getSolarTime().calculateNauticalDusk(day, latitude, longitude).ifPresent(System.out::println);
+        final var actual = sunStateChecker.isNauticalTwilight(day, latitude, longitude);
+
+        Assertions.assertThat(actual)
+                .isFalse();
+    }
+
 }
