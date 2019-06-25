@@ -21,18 +21,6 @@ public class SunStateChecker {
     }
 
     /**
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     * @return true if it is currently day at the given location. This returns
-     * true if the current time at the location is after the sunrise and
-     * before the sunset for that location.
-     */
-    public boolean isDay(double latitude, double longitude) {
-        final var now = ZonedDateTime.now();
-        return isDay(now, latitude, longitude);
-    }
-
-    /**
      * @param calendar  a datetime
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
@@ -63,18 +51,6 @@ public class SunStateChecker {
     }
 
     /**
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     * @return true if it is night at the given location currently. This returns
-     * true if the current time at the location is after the astronomical twilight dusk and
-     * before the astronomical twilight dawn for that location.
-     */
-    public boolean isNight(double latitude, double longitude) {
-        final var now = ZonedDateTime.now();
-        return isNight(now, latitude, longitude);
-    }
-
-    /**
      * @param calendar  a datetime
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
@@ -100,18 +76,6 @@ public class SunStateChecker {
         final var dusk = maybeDusk.get();
 
         return calendar.isBefore(dawn) || calendar.isAfter(dusk);
-    }
-
-    /**
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     * @return true if it is currently civil twilight at the current time at the given location.
-     * This returns true if the current time at the location is between sunset and civil twilight dusk
-     * or between civil twilight dawn and sunrise.
-     */
-    public boolean isCivilTwilight(double latitude, double longitude) {
-        final var today = ZonedDateTime.now();
-        return isCivilTwilight(today, latitude, longitude);
     }
 
     private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
@@ -144,18 +108,6 @@ public class SunStateChecker {
     }
 
     /**
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     * @return true if it is currently nautical twilight at the current time at the given location.
-     * This returns true if the current time at the location is between civil and nautical twilight dusk
-     * or between nautical and civil twilight dawn.
-     */
-    public boolean isNauticalTwilight(double latitude, double longitude) {
-        final var today = ZonedDateTime.now();
-        return isNauticalTwilight(today, latitude, longitude);
-    }
-
-    /**
      * @param calendar the datetime for which to determine if it's nautical twilight in the given location
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
@@ -175,18 +127,6 @@ public class SunStateChecker {
                 .flatMap(civilDusk -> maybeCivilDawn
                 .map(civilDawn -> inBetween(calendar, nauticalDawn, civilDawn, civilDusk, nauticalDusk))))).
                 orElse(false);
-    }
-
-    /**
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     * @return true if it is currently astronomical twilight at the current time at the given location.
-     * This returns true if the current time at the location is between nautical and astronomical twilight dusk
-     * or between astronomical and nautical twilight dawn.
-     */
-    public boolean isAstronomicalTwilight(double latitude, double longitude) {
-        final var today = ZonedDateTime.now();
-        return isAstronomicalTwilight(today, latitude, longitude);
     }
 
     /**
@@ -214,31 +154,22 @@ public class SunStateChecker {
     /**
      * @param latitude  the latitude of the location in degrees.
      * @param longitude the longitude of the location in degrees (West is negative)
-     * @return true if it is civil, nautical, or astronomical twilight currently at the given location.
+     * @param dateTime the given datetime to check for twilight
+     * @return true if at the given location and dateTime, it is civil, nautical, or astronomical twilight.
      */
-    public boolean isTwilight(double latitude, double longitude) {
-        final var today = ZonedDateTime.now();
-        return isTwilight(today, latitude, longitude);
+    public boolean isTwilight(ZonedDateTime dateTime, double latitude, double longitude) {
+        return isCivilTwilight(dateTime, latitude, longitude)
+                || isNauticalTwilight(dateTime, latitude, longitude)
+                || isAstronomicalTwilight(dateTime, latitude, longitude);
     }
 
-    /**
-     * @param latitude  the latitude of the location in degrees.
-     * @param longitude the longitude of the location in degrees (West is negative)
-     * @param calendar the given datetime to check for twilight
-     * @return true if at the given location and calendar, it is civil, nautical, or astronomical twilight.
-     */
-    public boolean isTwilight(ZonedDateTime calendar, double latitude, double longitude) {
-        return isCivilTwilight(calendar, latitude, longitude)
-                || isNauticalTwilight(calendar, latitude, longitude)
-                || isAstronomicalTwilight(calendar, latitude, longitude);
-    }
+    public DayPeriod getDayPeriod(ZonedDateTime dateTime, double latitude, double longitude) {
+        if (isDay(dateTime, latitude, longitude)) return DayPeriod.DAY;
+        if (isCivilTwilight(dateTime, latitude, longitude)) return DayPeriod.CIVIL_TWILIGHT;
+        if (isNauticalTwilight(dateTime, latitude, longitude)) return DayPeriod.NAUTICAL_TWILIGHT;
+        if (isAstronomicalTwilight(dateTime, latitude, longitude)) return DayPeriod.ASTRONOMICAL_TWILIGHT;
+        if (isNight(dateTime, latitude, longitude)) return DayPeriod.NIGHT;
 
-    public DayPeriod getDayPeriod(ZonedDateTime calendar, double latitude, double longitude) {
-        if (isDay(calendar, latitude, longitude)) return DayPeriod.DAY;
-        if (isCivilTwilight(calendar, latitude, longitude)) return DayPeriod.CIVIL_TWILIGHT;
-        if (isNauticalTwilight(calendar, latitude, longitude)) return DayPeriod.NAUTICAL_TWILIGHT;
-        if (isAstronomicalTwilight(calendar, latitude, longitude)) return DayPeriod.ASTRONOMICAL_TWILIGHT;
-        if (isNight(calendar, latitude, longitude)) return DayPeriod.NIGHT;
         return DayPeriod.NIGHT;
     }
 
