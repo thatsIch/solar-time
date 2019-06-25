@@ -50,13 +50,6 @@ public class SunStateChecker {
                 .orElseGet(() -> is24HourNightTime(calendar, latitude, longitude));
     }
 
-    private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
-        final var inEarly = now.isAfter(earlier) && now.isBefore(early);
-        final var inLater = now.isAfter(late) && now.isBefore(later);
-
-        return inEarly || inLater;
-    }
-
     /**
      * @param calendar the datetime for which to determine if it's civil twilight in the given location
      * @param latitude  the latitude of the location in degrees.
@@ -144,5 +137,12 @@ public class SunStateChecker {
         final var rads = Math.toRadians(latitude);
 
         return hourAngleCalculator.is24HourNightTime(rads, sunDeclination);
+    }
+
+    private boolean inBetween(ZonedDateTime now, ZonedDateTime earlier, ZonedDateTime early, ZonedDateTime late, ZonedDateTime later) {
+        final var inEarly = now.isAfter(earlier) && now.isBefore(early);
+        final var inLater = now.isAfter(late) && now.isBefore(later);
+
+        return inEarly || inLater;
     }
 }
